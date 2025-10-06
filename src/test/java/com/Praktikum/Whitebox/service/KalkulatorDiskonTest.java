@@ -96,21 +96,35 @@ public class KalkulatorDiskonTest {
         assertTrue(diskon5 > diskon4);
 // Boundary: 9 -> 10 (naik ke diskon 10%)
         double diskon9 = kalkulatorDiskon.hitungDiskon(harga, 9, "BARU");
-        double diskon10 = kalkulatorDiskon.hitungDiskon(harga, 10,
-                "BARU");
+        double diskon10 = kalkulatorDiskon.hitungDiskon(harga, 10, "BARU");
         assertTrue(diskon10 > diskon9);
 // Boundary: 49 -> 50 (naik ke diskon 15%)
-        double diskon49 = kalkulatorDiskon.hitungDiskon(harga, 49,
-                "BARU");
-        double diskon50 = kalkulatorDiskon.hitungDiskon(harga, 50,
-                "BARU");
+        double diskon49 = kalkulatorDiskon.hitungDiskon(harga, 49, "BARU");
+        double diskon50 = kalkulatorDiskon.hitungDiskon(harga, 50, "BARU");
         assertTrue(diskon50 > diskon49);
 // Boundary: 99 -> 100 (naik ke diskon 20%)
-        double diskon99 = kalkulatorDiskon.hitungDiskon(harga, 99,
-                "BARU");
-        double diskon100 = kalkulatorDiskon.hitungDiskon(harga, 100,
-                "BARU");
+        double diskon99 = kalkulatorDiskon.hitungDiskon(harga, 99, "BARU");
+        double diskon100 = kalkulatorDiskon.hitungDiskon(harga, 100, "BARU");
         assertTrue(diskon100 > diskon99);
+    }
+    @Test
+    @DisplayName("Test semua possible paths dalam method hitungDiskon")
+    void testAllPathsInHitungDiskon() {
+        // Path 1: kuantitas 3 + tipe pelanggan BARU → 2% diskon
+        double diskon1 = kalkulatorDiskon.hitungDiskon(1000, 3, "BARU");
+        assertEquals(1000 * 3 * 0.02, diskon1, 0.001); // 60.0
+
+        // Path 2: kuantitas 7 + tipe pelanggan REGULER → 5% + 5% = 10%
+        double diskon2 = kalkulatorDiskon.hitungDiskon(1000, 7, "REGULER");
+        assertEquals(1000 * 7 * 0.10, diskon2, 0.001); // 700.0
+
+        // Path 3: kuantitas 20 + tipe pelanggan PREMIUM → 10% + 10% = 20%
+        double diskon3 = kalkulatorDiskon.hitungDiskon(1000, 20, "PREMIUM");
+        assertEquals(1000 * 20 * 0.20, diskon3, 0.001); // 4000.0
+
+        // Path 4: kuantitas 200 + PREMIUM → 20% + 10% = 30% (maksimal)
+        double diskon4 = kalkulatorDiskon.hitungDiskon(1000, 200, "PREMIUM");
+        assertEquals(1000 * 200 * 0.30, diskon4, 0.001); // 60000.0
     }
 }
 
