@@ -7,114 +7,100 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// @DisplayName memberikan nama yang mudah dibaca untuk seluruh kelas tes ini di laporan pengujian.
 @DisplayName("Test untuk Kelas Kategori")
 class KategoriTest {
 
-    // Mendeklarasikan variabel untuk objek Kategori yang akan kita uji.
     private Kategori kategori;
 
-    // Anotasi @BeforeEach dari JUnit 5.
-    // Metode ini akan dijalankan SECARA OTOMATIS sebelum SETIAP metode tes di kelas ini.
-    // Tujuannya adalah untuk memastikan setiap tes dimulai dengan objek yang "bersih" dan sama.
     @BeforeEach
     void setUp() {
-        // Membuat instance baru dari Kategori.
-        // Ini memastikan tes tidak saling mempengaruhi.
         kategori = new Kategori("K01", "Elektronik", "Perangkat elektronik rumah tangga");
     }
 
-    // Tes ini khusus untuk memeriksa konstruktor default (tanpa argumen).
+    /**
+     * Deskripsi: Tes ini secara spesifik memanggil constructor `Kategori()` yang tidak memiliki argumen.
+     * Tujuan: Untuk memastikan semua properti diinisialisasi dengan nilai default yang benar (`null` untuk String, `false` untuk `aktif`),
+     * sekaligus menutupi constructor ini yang sebelumnya mungkin tidak teruji.
+     */
     @Test
     @DisplayName("Konstruktor tanpa argumen harus membuat objek kosong")
     void testNoArgsConstructor() {
-        // Membuat objek menggunakan `new Kategori()`
         Kategori kategoriKosong = new Kategori();
-
-        // Memastikan bahwa properti yang berupa objek (String) bernilai null.
         assertNull(kategoriKosong.getKode(), "Kode harus null");
         assertNull(kategoriKosong.getNama(), "Nama harus null");
-
-        // Memastikan bahwa properti boolean `aktif` bernilai false secara default.
         assertFalse(kategoriKosong.isAktif(), "Status aktif harus false by default");
     }
 
-    // Tes ini memverifikasi bahwa konstruktor yang menerima parameter
-    // mengisi semua properti objek dengan benar.
+    /**
+     * Deskripsi: Tes ini memverifikasi bahwa constructor yang menerima parameter (`kode`, `nama`, `deskripsi`) dapat mengisi semua properti objek dengan benar.
+     * Tujuan: Memastikan logika constructor berparameter berjalan sesuai harapan, termasuk memeriksa bahwa properti `aktif` secara otomatis diatur ke `true`,
+     * dan semua metode getter mengembalikan nilai yang sesuai.
+     */
     @Test
     @DisplayName("Konstruktor dengan argumen harus menginisialisasi properti dengan benar")
     void testParameterizedConstructor() {
-        // assertEquals membandingkan nilai yang diharapkan (argumen 1) dengan nilai aktual (argumen 2).
         assertEquals("K01", kategori.getKode());
         assertEquals("Elektronik", kategori.getNama());
         assertEquals("Perangkat elektronik rumah tangga", kategori.getDeskripsi());
-
-        // assertTrue memeriksa apakah nilai `aktif` adalah true sesuai logika konstruktor.
         assertTrue(kategori.isAktif(), "Status aktif harus otomatis true");
     }
 
-    // Tes ini bertujuan untuk memastikan semua metode setter berfungsi sebagaimana mestinya.
+    /**
+     * Deskripsi: Sebuah tes komprehensif yang memanggil setiap metode setter pada objek `Kategori` (`setKode`, `setNama`, `setDeskripsi`, `setAktif`) untuk memberinya nilai baru.
+     * Tujuan: Untuk memverifikasi bahwa semua metode setter berfungsi dengan benar dalam mengubah nilai properti objek.
+     * Tes ini sangat penting untuk mencapai 100% Instruction Coverage pada metode-metode yang sebelumnya tidak teruji.
+     */
     @Test
     @DisplayName("Setters harus berhasil mengubah nilai properti")
     void testSetters() {
-        // Menguji setter untuk 'kode'
         kategori.setKode("K02");
         assertEquals("K02", kategori.getKode());
 
-        // Menguji setter untuk 'nama'
         kategori.setNama("Perabotan");
         assertEquals("Perabotan", kategori.getNama());
 
-        // Menguji setter untuk 'deskripsi'
         kategori.setDeskripsi("Perabotan kayu jati");
         assertEquals("Perabotan kayu jati", kategori.getDeskripsi());
 
-        // Menguji setter untuk 'aktif'
         kategori.setAktif(false);
         assertFalse(kategori.isAktif());
     }
 
-    // Ini adalah tes yang paling kompleks, memverifikasi logika `equals` dan `hashCode`
-    // agar sesuai dengan "kontrak" atau aturan di Java.
+    /**
+     * Deskripsi: Tes ini menguji metode `equals()` dan `hashCode()` dengan berbagai skenario, seperti membandingkan objek dengan dirinya sendiri,
+     * dengan objek lain yang kodenya sama, dengan objek lain yang kodenya berbeda, dengan `null`, dan dengan objek dari kelas lain.
+     * Tujuan: Untuk memastikan implementasi `equals()` dan `hashCode()` sesuai dengan "kontrak" atau aturan di Java.
+     * Ini akan meningkatkan Branch Coverage secara signifikan karena menguji semua cabang `if` di dalam metode `equals`.
+     */
     @Test
     @DisplayName("Metode equals() dan hashCode() harus bekerja sesuai kontrak")
     void testEqualsAndHashCode() {
-        // SETUP: Membuat objek pembanding
-        // Objek ini seharusnya dianggap SAMA karena `kode`-nya sama ("K01").
         Kategori kategoriSama = new Kategori("K01", "Nama Berbeda", "Deskripsi Berbeda");
-        // Objek ini seharusnya dianggap BEDA karena `kode`-nya berbeda ("K99").
         Kategori kategoriBeda = new Kategori("K99", "Elektronik", "Perangkat elektronik rumah tangga");
 
-        // ASSERT: Melakukan berbagai macam pengujian
-        // 1. Refleksif: sebuah objek harus selalu sama dengan dirinya sendiri.
+        // 1. Refleksif
         assertEquals(kategori, kategori, "Objek harus sama dengan dirinya sendiri");
-
-        // 2. Simetris: jika A sama dengan B, maka B harus sama dengan A.
+        // 2. Simetris
         assertEquals(kategori, kategoriSama, "Dua objek dengan kode yang sama harus dianggap equal");
         assertEquals(kategoriSama, kategori, "Equals harus simetris");
-
-        // 3. Memastikan objek dengan `kode` berbeda tidak dianggap sama.
+        // 3. Objek berbeda
         assertNotEquals(kategori, kategoriBeda, "Objek dengan kode berbeda tidak boleh equal");
-
-        // 4. Memastikan objek tidak sama dengan `null`.
+        // 4. Perbandingan dengan null
         assertNotEquals(null, kategori, "Objek tidak boleh equal dengan null");
-
-        // 5. Memastikan objek tidak sama dengan objek dari kelas yang berbeda.
+        // 5. Perbandingan dengan kelas lain
         assertNotEquals(kategori, new Object(), "Objek tidak boleh equal dengan tipe yang berbeda");
-
-        // 6. Kontrak hashCode: jika dua objek `equals`, maka `hashCode`-nya WAJIB sama.
+        // 6. Kontrak hashCode
         assertEquals(kategori.hashCode(), kategoriSama.hashCode(), "HashCode harus sama untuk objek yang equal");
     }
 
-    // Tes ini memastikan metode `toString()` menghasilkan output yang informatif.
+    /**
+     * Deskripsi: Tes ini memanggil metode `toString()` dan memeriksa apakah string yang dihasilkan mengandung informasi-informasi kunci dari objek `Kategori`.
+     * Tujuan: Memastikan metode `toString()` bekerja tanpa error dan menghasilkan output yang informatif, sehingga metode yang sebelumnya tidak teruji ini menjadi ter-cover.
+     */
     @Test
     @DisplayName("Metode toString() harus menghasilkan representasi string yang benar")
     void testToString() {
-        // Panggil metode toString() dan simpan hasilnya di variabel.
         String output = kategori.toString();
-
-        // Kita tidak perlu memeriksa keseluruhan string secara persis, karena itu terlalu kaku.
-        // Cukup pastikan string output mengandung informasi-informasi penting.
         assertTrue(output.contains("kode='K01'"), "toString() harus mengandung kode");
         assertTrue(output.contains("nama='Elektronik'"), "toString() harus mengandung nama");
         assertTrue(output.contains("aktif=true"), "toString() harus mengandung status aktif");
